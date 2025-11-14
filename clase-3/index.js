@@ -40,3 +40,4 @@ const presentation = showStudentInfo(students, 333)
 const id = students.length + 1
 const data = addNewStudent(students, { id, name: "gabo", lastname: "Perez", course: "Lengua" })
 console.log(data)
+

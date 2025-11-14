@@ -1,14 +1,15 @@
 {
-  "name": "clase-3",
+  "name": "clase-4",
   "version": "1.0.0",
-  "description": "Pequeño sistema para aprender sobre módulos",
+  "description": "Módulos nativos de javascript (node)",
   "main": "index.js",
   "scripts": {
-    "pepe": "node index.js"
+    "dev": "node index.js"
   },
   "keywords": [
-    "modulos",
-    "backend"
+    "os",
+    "node",
+    "module"
   ],
   "author": "gabialberini@gmail.com",
   "license": "ISC",
