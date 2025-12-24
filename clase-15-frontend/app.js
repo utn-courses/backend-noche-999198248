@@ -10,10 +10,17 @@ const $category = document.getElementById("category")
 const $description = document.getElementById("description")
 const $section = document.querySelector("section")
 
-const traerProductos = async () => {
+const products = []
 
-  const respuestaDelServidor = await fetch("http://localhost:50000/products")
+const traerProductos = async () => {
+  // petición http con metodo GET
+  // recuperar info
+  const respuestaDelServidor = await fetch("http://localhost:50000/products", {
+    method: "GET"
+  })
+
   const products = await respuestaDelServidor.json()
+  console.log(products)
 
   $section.innerHTML = ""
 
@@ -47,8 +54,15 @@ $form.addEventListener("submit", async (e) => {
     description: $description.value
   }
 
-  // method: POST
-  // url: /products
+  if (!$name.value || !$price.value || !$category.value || !$description.value) {
+    alert("🚧 Debes completar el formulario 🚧")
+    return
+  }
+
+  console.log(dataProduct)
+
+  // method: POST ✅
+  // url: /products ✅
 
   // ✅ avisar que tipo de dato le voy a enviar (json)
   // ⌚ enviarle la data en formato json
@@ -56,20 +70,16 @@ $form.addEventListener("submit", async (e) => {
   const response = await fetch("http://localhost:50000/products", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json" // te estoy mandando un json 😎
     },
     body: JSON.stringify(dataProduct)
   })
 
-  const data = await response.json()
+  // el servidor devuelve la data del objeto agregado en la db
+  const createdProduct = await response.json()
 
-  alert(`✅ Producto agregado con éxito id: ${data._id}`)
+  alert(`✅ Producto agregado con éxito id: ${createdProduct._id}`)
 
   traerProductos()
-
-  $name.value = ""
-  $price.value = ""
-  $stock.value = ""
-  $category.value = ""
-  $description.value = ""
+  $form.reset()
 })
