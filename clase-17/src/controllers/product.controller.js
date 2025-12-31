@@ -12,12 +12,8 @@ const createProduct = async (data) => {
 }
 
 const updateProduct = async (id, updates) => {
-  // agenda de contactos
-  // actualizar un contacto
-  // 1 - encontrar el que quiero actualizar
-  // 2 - modificar la data necesaria
   const updatedProduct = await Product.findByIdAndUpdate(id, updates, { new: true })
-  console.log(updatedProduct)
+  return updatedProduct
 }
 
 const deleteProduct = async (id) => {

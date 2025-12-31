@@ -64,6 +64,17 @@ button:hover {
   background-color: #005fcc;
 }
 
+
+button:disabled {
+  background-color: #0077ff9f;
+  cursor: not-allowed;
+}
+
+#btn-cancel {
+  display: none;
+  background-color: #3492ff;
+}
+
 /* Sección de productos */
 /* Sección de productos en grid */
 section {

@@ -1,4 +1,4 @@
-import { createProduct, deleteProduct, getProducts } from "./controllers/product.controller.js"
+import { createProduct, deleteProduct, getProducts, updateProduct } from "./controllers/product.controller.js"
 import express from "express"
 import cors from "cors"
 import { connectDb } from "./config/mongodb.js"
@@ -38,6 +38,13 @@ serverHttp.delete("/products/:id", async (req, res) => {
   const id = req.params.id
   const deletedProduct = await deleteProduct(id)
   res.json(deletedProduct)
+})
+
+serverHttp.patch("/products/:id", async (req, res) => {
+  const id = req.params.id
+  const body = req.body
+  const updatedProduct = await updateProduct(id, body)
+  res.json(updatedProduct)
 })
 
 const PORT = 50000

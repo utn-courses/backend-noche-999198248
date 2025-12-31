@@ -9,8 +9,13 @@ const $stock = document.getElementById("stock")
 const $category = document.getElementById("category")
 const $description = document.getElementById("description")
 const $section = document.querySelector("section")
+const $btnSubmit = document.getElementById("btn-submit")
+const $btnCancel = document.getElementById("btn-cancel")
 
-const products = []
+let products = []
+
+let isEditing = false
+let idProductEditing = null
 
 const traerProductos = async () => {
   // petición http con metodo GET
@@ -19,7 +24,7 @@ const traerProductos = async () => {
     method: "GET"
   })
 
-  const products = await respuestaDelServidor.json()
+  products = await respuestaDelServidor.json()
 
   $section.innerHTML = ""
 
@@ -43,8 +48,8 @@ const traerProductos = async () => {
         <p>ID: ${_id}</p>
         <h3>$${price} - ${stock ? "Stock:" : ""} ${textStock}</h3>
         <p>${description}</p>
-        <button>Actualizar</button>
-        <button onclick="deleteProduct('${_id}')">Borrar</button>
+        <button onclick="handleEditingProduct('${_id}')" >Actualizar</button>
+        <button ${!stock && 'disabled'} onclick="deleteProduct('${_id}')">Borrar</button>
       </div>
     `
   })
@@ -55,9 +60,29 @@ traerProductos()
 // controlar el evento
 
 // definir la funcion controladora del submit
-$form.addEventListener("submit", async (e) => {
+$form.addEventListener("submit", (e) => {
   e.preventDefault()
 
+  if (!isEditing) {
+    addProduct()
+  } else {
+    const updates = {
+      name: $name.value,
+      price: Number($price.value),
+      stock: Number($stock.value),
+      category: $category.value,
+      description: $description.value
+    }
+
+    updateProduct(updates)
+  }
+})
+
+$btnCancel.addEventListener("click", () => {
+  initializateStates()
+})
+
+const addProduct = async () => {
   const dataProduct = {
     name: $name.value,
     price: Number($price.value),
@@ -94,7 +119,7 @@ $form.addEventListener("submit", async (e) => {
 
   traerProductos()
   $form.reset()
-})
+}
 
 const deleteProduct = async (id) => {
   const confirmacion = confirm("¿Está seguro que quiere borrar el producto?")
@@ -120,4 +145,50 @@ const deleteProduct = async (id) => {
   } catch (error) {
     console.error("No se puede borrar el producto")
   }
+}
+
+const handleEditingProduct = (id) => {
+  isEditing = true
+  idProductEditing = id
+  $btnCancel.style.display = "block"
+
+  $btnSubmit.textContent = "Editar producto"
+  const foundProduct = products.find(p => p._id === id)
+  const { name, price, stock, category, description } = foundProduct
+
+  $name.value = name
+  $price.value = price
+  $stock.value = stock
+  $category.value = category
+  $description.value = description
+}
+
+const updateProduct = async (updatedData) => {
+  const res = await fetch(`http://localhost:50000/products/${idProductEditing}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json" // te estoy mandando un json 😎
+      },
+      body: JSON.stringify(updatedData)
+    }
+  )
+  if (!res.ok) {
+    alert("No se puede actualizar")
+    return
+  }
+
+  const dataUpdatedProduct = await res.json()
+
+  alert(`✅ Producto actualizado ID: ${dataUpdatedProduct._id}`)
+  traerProductos()
+  initializateStates()
+}
+
+const initializateStates = () => {
+  $form.reset()
+  $btnCancel.style.display = "none"
+  $btnSubmit.textContent = "Agregar producto"
+  idProductEditing = null
+  isEditing = false
 }
