@@ -1,0 +1,26 @@
+meta {
+  name: add new product
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:50000/products
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Par de medias",
+    "price": 50,
+    "stock": 0,
+    "category": "Ropa",
+    "description": "Medias de algodón unisex."
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

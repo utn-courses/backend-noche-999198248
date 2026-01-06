@@ -8,12 +8,15 @@ const $price = document.getElementById("price")
 const $stock = document.getElementById("stock")
 const $category = document.getElementById("category")
 const $description = document.getElementById("description")
+
 const $section = document.querySelector("section")
+
 const $btnSubmit = document.getElementById("btn-submit")
 const $btnCancel = document.getElementById("btn-cancel")
 
+// estados globales 
+// variables globales
 let products = []
-
 let isEditing = false
 let idProductEditing = null
 
@@ -25,6 +28,7 @@ const traerProductos = async () => {
   })
 
   products = await respuestaDelServidor.json()
+  console.log(products)
 
   $section.innerHTML = ""
 
@@ -57,9 +61,6 @@ const traerProductos = async () => {
 
 traerProductos()
 
-// controlar el evento
-
-// definir la funcion controladora del submit
 $form.addEventListener("submit", (e) => {
   e.preventDefault()
 
@@ -132,7 +133,7 @@ const deleteProduct = async (id) => {
 
   try {
     // http://localhost:50000/products/694b33c41c2125b032792357
-    const res = await fetch(`http://localhost:50000/products/${id}`, { method: "DELETE" })
+    const res = await fetch(`http://localhost:5   0000/products/${id}`, { method: "DELETE" })
     const product = await res.json()
 
     alert(

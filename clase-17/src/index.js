@@ -15,7 +15,7 @@ serverHttp.use(express.json())
 // GET
 serverHttp.get("/products", async (req, res) => {
   const products = await getProducts()
-  res.send(products)
+  res.json(products)
 })
 
 // AGREGAR UN PRODUCTO
