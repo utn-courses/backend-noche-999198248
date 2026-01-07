@@ -1,4 +1,3 @@
-import { connectDb } from "../config/mongodb.js"
 import { Product } from "../models/product.model.js"
 
 const getProducts = async () => {
@@ -7,8 +6,12 @@ const getProducts = async () => {
 }
 
 const createProduct = async (data) => {
-  const createdProduct = await Product.create(data)
-  return createdProduct
+  try {
+    const createdProduct = await Product.create(data)
+    return { success: true, createdProduct }
+  } catch (error) {
+    return { success: false, error: error.message }
+  }
 }
 
 const updateProduct = async (id, updates) => {
@@ -17,8 +20,12 @@ const updateProduct = async (id, updates) => {
 }
 
 const deleteProduct = async (id) => {
-  const deletedProduct = await Product.findByIdAndDelete(id)
-  return deletedProduct
+  try {
+    const deletedProduct = await Product.findByIdAndDelete(id)
+    return { success: true, deletedProduct }
+  } catch (error) {
+    return { success: false, error: error.message }
+  }
 }
 
 export { getProducts, createProduct, updateProduct, deleteProduct }
