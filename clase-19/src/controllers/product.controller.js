@@ -1,20 +1,28 @@
 import { Product } from "../models/product.model.js"
 
-const getProducts = async () => {
+const getProducts = async (req, res) => {
   try {
     const products = await Product.find().sort({ _id: -1 })
-    return { sucess: true, data: products }
+    res.json({ sucess: true, data: products })
   } catch (error) {
-    return { success: false, error: "Error al traer los productos" }
+    res.status(500).json({ success: false, error: "Error al traer los productos" })
   }
 }
 
-const createProduct = async (data) => {
+const createProduct = async (req, res) => {
   try {
-    const createdProduct = await Product.create(data)
-    return { success: true, data: createdProduct }
+    const body = req.body
+    const { name, price, stock, category, description } = body
+
+    if (!name) {
+      return res.status(400).json({ success: false, error: "Data invalida, vuelve a intentarlo" })
+    }
+
+    const createdProduct = await Product.create({ name, price, stock, category, description })
+
+    res.status(201).json({ success: true, data: createdProduct })
   } catch (error) {
-    return { success: false, error: error.message }
+    res.status(500).json({ success: false, error: error.message })
   }
 }
 
