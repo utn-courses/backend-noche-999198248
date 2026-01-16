@@ -1,11 +1,11 @@
 meta {
-  name: register
+  name: login
   type: http
-  seq: 6
+  seq: 7
 }
 
 post {
-  url: http://localhost:50000/auth/register
+  url: http://localhost:50000/auth/login
   body: json
   auth: inherit
 }
@@ -15,6 +15,7 @@ body:json {
     "email": "brunoutn@gmail.com",
     "password": "aguantelanus"
   }
+  
 }
 
 settings {
