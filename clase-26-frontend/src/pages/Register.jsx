@@ -1,6 +1,9 @@
 
 import { useState } from 'react';
 import '../styles/Auth.css';
+import { register } from '../services/apiAuth';
+import { generatePopup } from '../utils/popup.js';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +16,8 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,14 +59,30 @@ const Register = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = validateForm();
 
     if (Object.keys(newErrors).length === 0) {
-      console.log('Registro exitoso:', formData);
-      // Aquí iría la lógica de registro
-      alert('¡Registro exitoso!');
+      const res = await register({ email: formData.email, password: formData.password, username: formData.username });
+      console.log(res)
+      const json = await res.json();
+
+      console.log(json)
+      await generatePopup({
+        textTitle: res.ok ? 'Registro exitoso' : 'Error de Registro',
+        textContent: res.ok ? 'Tu cuenta ha sido creada. Ahora puedes iniciar sesión.' : 'Hubo un problema al crear tu cuenta. Por favor, intenta de nuevo.',
+        icon: res.ok ? 'success' : 'error',
+        showCancelButton: false,
+        btnConfirm: 'Cerrar'
+      });
+      setFormData({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+      });
+      navigate("/login")
     } else {
       setErrors(newErrors);
     }

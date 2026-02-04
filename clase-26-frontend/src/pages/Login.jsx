@@ -2,6 +2,8 @@ import { useState } from 'react';
 import '../styles/Auth.css';
 import { generatePopup } from '../utils/popup';
 import { useNavigate } from 'react-router-dom';
+import { login } from '../services/apiAuth.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -11,7 +13,8 @@ const Login = () => {
 
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+
+  const { user } = useAuth();
 
   const navigate = useNavigate();
 
@@ -48,13 +51,7 @@ const Login = () => {
     const newErrors = validateForm();
 
     if (Object.keys(newErrors).length === 0) {
-      const res = await fetch('http://localhost:50000/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
+      const res = await login(formData);
 
       const json = await res.json();
 
@@ -89,7 +86,7 @@ const Login = () => {
 
       <div className="auth-card">
         <div className="auth-header">
-          <h1>Bienvenido</h1>
+          <h1>Bienvenido {user}</h1>
           <p>Inicia sesión en tu cuenta</p>
         </div>
 

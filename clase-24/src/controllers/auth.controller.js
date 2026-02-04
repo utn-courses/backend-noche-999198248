@@ -11,10 +11,10 @@ const register = async (req, res) => {
   try {
     const body = req.body
 
-    const { email, password } = body
+    const { email, password, username } = body
 
     // implementar validaciones de input con ZOD
-    if (!email || !password) {
+    if (!email || !password || !username) {
       return res.status(400).json({ success: false, error: "data invalida, revisa los datos compartidos" })
     }
 
@@ -31,7 +31,8 @@ const register = async (req, res) => {
 
     const newDataUser = {
       email,
-      password: hash
+      password: hash,
+      username
     }
 
     const newUser = await User.create(newDataUser)

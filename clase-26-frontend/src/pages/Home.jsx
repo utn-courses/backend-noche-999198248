@@ -3,7 +3,8 @@ import { Header } from '../components/Header';
 import '../styles/Home.css';
 import { generatePopup } from '../utils/popup';
 import { useNavigate } from "react-router-dom"
-import { createProduct, getProducts } from '../services/api.js';
+import { createProduct, deleteProduct, getProducts, updateProduct } from '../services/api.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const Home = () => {
   const [products, setProducts] = useState([])
@@ -17,7 +18,8 @@ const Home = () => {
     category: ''
   })
 
-  const BASE_API = "http://localhost:50000/products"
+  const { user } = useAuth()
+
 
   const navigate = useNavigate()
 
@@ -83,15 +85,7 @@ const Home = () => {
         category: ''
       })
     } else {
-      const res = await fetch(`${BASE_API}/${editingProduct._id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OTcwMDNmOTI3OTA4NTI4YjUzYTkzNDgiLCJ1c2VybmFtZSI6Ik51ZXZvIHVzdWFyaW8iLCJlbWFpbCI6Im1hcmlhbm9AZ21haWwuY29tIiwiaWF0IjoxNzY5NzI2MjE1LCJleHAiOjE3Njk3NjIyMTV9.sFyNW6qMEBnOaIIS2Nlkb5OmO0UKVAV8ELr2BKWD4GU"
-        },
-        body: JSON.stringify(formData)
-      })
-
+      const res = await updateProduct(editingProduct, formData)
       const json = await res.json()
 
       fetchingProducts()
@@ -128,12 +122,7 @@ const Home = () => {
     })
 
     if (validateDelete.isConfirmed) {
-      await fetch(`${BASE_API}/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OTcwMDNmOTI3OTA4NTI4YjUzYTkzNDgiLCJ1c2VybmFtZSI6Ik51ZXZvIHVzdWFyaW8iLCJlbWFpbCI6Im1hcmlhbm9AZ21haWwuY29tIiwiaWF0IjoxNzY5NzI2MjE1LCJleHAiOjE3Njk3NjIyMTV9.sFyNW6qMEBnOaIIS2Nlkb5OmO0UKVAV8ELr2BKWD4GU"
-        }
-      })
+      await deleteProduct(id)
     }
 
     fetchingProducts()
@@ -165,6 +154,7 @@ const Home = () => {
       <section className="home-banner">
         <h2>Discover Our Exclusive Products</h2>
         <p>High quality, affordable prices, and fast delivery.</p>
+        <h2>Usuario loguead: {user}</h2>
       </section>
 
       {/* Product Catalog */}
