@@ -6,6 +6,8 @@ import { IPayload } from "../interfaces/IPayload"
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const header = req.headers.authorization
 
+  const JWT_SECRET = process.env.JWT_SECRET
+
   if (!header) {
     return res.status(401).json({ success: false, error: "el token es requerido" })
   }
@@ -24,7 +26,7 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   }
 
   try {
-    const payload = jwt.verify(token, "1h")
+    const payload = jwt.verify(token, JWT_SECRET)
 
     req.user = payload as IPayload
 

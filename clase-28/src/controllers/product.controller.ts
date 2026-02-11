@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import { Product } from "../models/product.model"
 import mongoose from "mongoose"
+import { productPartialValidate, productValidate } from "../validators/productValidator"
 
 const getProducts = async (req: Request, res: Response) => {
   try {
@@ -19,8 +20,10 @@ const createProduct = async (req: Request, res: Response) => {
 
     // zod / joi / yup validaciones
 
-    if (!name) {
-      return res.status(400).json({ success: false, error: "Data invalida, vuelve a intentarlo" })
+    const validate = productValidate.safeParse(body)
+
+    if (!validate.success) {
+      return res.status(400).json({ success: false, error: validate.error.flatten().fieldErrors })
     }
 
     const createdProduct = await Product.create({ name, price, stock, category, description })
@@ -36,6 +39,12 @@ const updateProduct = async (req: Request, res: Response) => {
   try {
     const id = req.params.id
     const updates = req.body
+
+    const validate = productPartialValidate.safeParse(updates)
+
+    if (!validate.success) {
+      return res.status(400).json({ success: false, error: validate.error.flatten().fieldErrors })
+    }
 
     const updatedProduct = await Product.findByIdAndUpdate(id, updates, { new: true })
 
